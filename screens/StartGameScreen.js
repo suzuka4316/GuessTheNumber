@@ -1,26 +1,67 @@
-import React from "react";
-import { Button, View, Text, StyleSheet, TextInput } from "react-native";
+import React, { useState } from "react";
+import {
+  Button,
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  // MEMO -- one of the APIs to talk with native device
+  Keyboard,
+} from "react-native";
 
-import { Card } from "../components";
-import { Colors } from "../constants/colors";
+import { Card, Input } from "../components";
+import { Colors } from "../constants/Colors";
 
 export const StartGameScreen = (props) => {
+  const [enteredValue, setEnteredValue] = useState("");
+
+  const numberInputHandler = (inputText) => {
+    // MEMO -- Replace any input that is not a number to empty string
+    setEnteredValue(inputText.replace(/[^0-9]/g), "");
+  };
+
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Start a New Game!</Text>
-      <Card style={styles.inputContainer}>
-        <Text>Select a Number</Text>
-        <TextInput />
-        <View style={styles.buttonContainer}>
-          <View style={styles.button}>
-            <Button title="Reset" onPress={() => {}} color={Colors.secondary} />
+    // MEMO -- Registering a touch listener without giving any visual feedback for ios to close the keyboard
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <View style={styles.screen}>
+        <Text style={styles.title}>Start a New Game!</Text>
+        <Card style={styles.inputContainer}>
+          <Text>Select a Number</Text>
+          <Input
+            style={styles.input}
+            // MEMO -- This works only for Android
+            blurOnSubmit
+            autoCapitalize="none"
+            autoCorrect={false}
+            // MEMO -- This only works for ios. Decimal key is disabled.
+            keyboardType="number-pad"
+            maxLength={2}
+            onChangeText={numberInputHandler}
+            value={enteredValue}
+          />
+          <View style={styles.buttonContainer}>
+            <View style={styles.button}>
+              <Button
+                title="Reset"
+                onPress={() => {}}
+                color={Colors.secondary}
+              />
+            </View>
+            <View style={styles.button}>
+              <Button
+                title="Confirm"
+                onPress={() => {}}
+                color={Colors.primary}
+              />
+            </View>
           </View>
-          <View style={styles.button}>
-            <Button title="Confirm" onPress={() => {}} color={Colors.primary} />
-          </View>
-        </View>
-      </Card>
-    </View>
+        </Card>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -33,6 +74,10 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     paddingHorizontal: 15,
+  },
+  input: {
+    width: 50,
+    textAlign: "center",
   },
   inputContainer: {
     width: 300,
