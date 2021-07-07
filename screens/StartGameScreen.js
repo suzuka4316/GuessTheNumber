@@ -20,6 +20,10 @@ export const StartGameScreen = (props) => {
     setEnteredValue(inputText.replace(/[^0-9]/g), "");
   };
 
+  const resetInputHandler = () => {
+    setEnteredValue("");
+  };
+
   return (
     // MEMO -- Registering a touch listener without giving any visual feedback for ios to close the keyboard
     <TouchableWithoutFeedback
@@ -47,7 +51,7 @@ export const StartGameScreen = (props) => {
             <View style={styles.button}>
               <Button
                 title="Reset"
-                onPress={() => {}}
+                onPress={resetInputHandler}
                 color={Colors.secondary}
               />
             </View>
