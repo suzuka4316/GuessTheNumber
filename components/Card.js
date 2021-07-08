@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export const Card = (props) => {
   // MEMO -- To assign/override certain unique styles from outside Card component, you can use spead operator

@@ -19,7 +19,7 @@ export const StartGameScreen = (props) => {
   const [selectedNumber, setSelectedNumber] = useState();
 
   const numberInputHandler = (inputText) => {
-    // MEMO -- Replace any input that is not a number to empty string
+    //Replace any input that is not a number to empty string
     setEnteredValue(inputText.replace(/[^0-9]/g), "");
   };
 
@@ -36,7 +36,7 @@ export const StartGameScreen = (props) => {
         "Input must be a number between 1 and 99.",
         [{ text: "Ok", style: "destructive", onPress: resetInputHandler }]
       );
-      // MEMO -- finish the function execution because the value is invalid
+      //finish the function execution because the value is invalid
       return;
     }
     setConfirmed(true);
@@ -53,7 +53,12 @@ export const StartGameScreen = (props) => {
         <Text>You've selected:</Text>
         <NumberContainer>{selectedNumber}</NumberContainer>
         <View style={styles.button}>
-          <Button title="START GAME" color={Colors.primary} />
+          <Button
+            title="START GAME"
+            color={Colors.primary}
+            //Triggers startGameHandler in App.js
+            onPress={() => props.onStartGame(selectedNumber)}
+          />
         </View>
       </Card>
     );
@@ -99,7 +104,7 @@ export const StartGameScreen = (props) => {
             </View>
           </View>
         </Card>
-        {/* MEMO -- If 'undefined', nothing will be printed */}
+        {/* If 'undefined', nothing will be printed */}
         {confirmedOutput}
       </View>
     </TouchableWithoutFeedback>
