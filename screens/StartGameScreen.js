@@ -5,15 +5,18 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
-  // MEMO -- one of the APIs to talk with native device
+  // MEMO -- APIs to talk with native device
   Keyboard,
+  Alert,
 } from "react-native";
 
-import { Card, Input } from "../components";
+import { Card, Input, NumberContainer } from "../components";
 import { Colors } from "../constants/Colors";
 
 export const StartGameScreen = (props) => {
   const [enteredValue, setEnteredValue] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+  const [selectedNumber, setSelectedNumber] = useState();
 
   const numberInputHandler = (inputText) => {
     // MEMO -- Replace any input that is not a number to empty string
@@ -22,7 +25,39 @@ export const StartGameScreen = (props) => {
 
   const resetInputHandler = () => {
     setEnteredValue("");
+    setConfirmed(false);
   };
+
+  const confirmInputHandler = () => {
+    const chosenNumber = parseInt(enteredValue);
+    if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+      Alert.alert(
+        "Invalid Number!",
+        "Input must be a number between 1 and 99.",
+        [{ text: "Ok", style: "destructive", onPress: resetInputHandler }]
+      );
+      // MEMO -- finish the function execution because the value is invalid
+      return;
+    }
+    setConfirmed(true);
+    // MEMO -- it doesn't matter in which order you call these 2 set states because all the states functions are batched together, and the change will be implemented on the next render cycle.
+    setEnteredValue("");
+    setSelectedNumber(parseInt(enteredValue));
+    Keyboard.dismiss();
+  };
+
+  let confirmedOutput;
+  if (confirmed) {
+    confirmedOutput = (
+      <Card style={styles.confirmedMessageContainer}>
+        <Text>You've selected:</Text>
+        <NumberContainer>{selectedNumber}</NumberContainer>
+        <View style={styles.button}>
+          <Button title="START GAME" color={Colors.primary} />
+        </View>
+      </Card>
+    );
+  }
 
   return (
     // MEMO -- Registering a touch listener without giving any visual feedback for ios to close the keyboard
@@ -58,12 +93,14 @@ export const StartGameScreen = (props) => {
             <View style={styles.button}>
               <Button
                 title="Confirm"
-                onPress={() => {}}
+                onPress={confirmInputHandler}
                 color={Colors.primary}
               />
             </View>
           </View>
         </Card>
+        {/* MEMO -- If 'undefined', nothing will be printed */}
+        {confirmedOutput}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -78,6 +115,11 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     paddingHorizontal: 15,
+  },
+  confirmedMessageContainer: {
+    marginTop: 10,
+    // MEMO -- alignItems is 'stretch' on default -> stretch children of a container to match the height of the container's cross axis
+    alignItems: "center",
   },
   input: {
     width: 50,
