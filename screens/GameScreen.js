@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, View, Alert, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { BodyText, Card, MainButton, NumberContainer } from "../components";
@@ -20,11 +20,17 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
+const renderListItems = (value, numOfRounds) => (
+  <View key={value} style={styles.listItem}>
+    <BodyText>#{numOfRounds}</BodyText>
+    <BodyText>{value}</BodyText>
+  </View>
+);
+
 export const GameScreen = (props) => {
-  const [currentGuess, setCurrentGuess] = useState(
-    generateRandomBetween(1, 100, props.userChoice)
-  );
-  const [rounds, setRounds] = useState(0);
+  const initialGuess = generateRandomBetween(1, 100, props.userChoice);
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [pastGuesses, setPastGuesses] = useState([initialGuess]);
 
   // MEMO -- useRef allows you to define a value which survives component re-renders. The difference to the useState is that the component doesn't re-render even if the value is changed.
   const currentLow = useRef(1);
@@ -34,7 +40,7 @@ export const GameScreen = (props) => {
   const { userChoice, onGameOver } = props;
   useEffect(() => {
     if (currentGuess === userChoice) {
-      onGameOver(rounds);
+      onGameOver(pastGuesses.length);
     }
     //if any of these dependency values change, then call function defined in useEffect after the functional component was rendered.
   }, [currentGuess, userChoice, onGameOver]);
@@ -52,7 +58,8 @@ export const GameScreen = (props) => {
     if (direction === "lower") {
       currentHigh.current = currentGuess;
     } else {
-      currentLow.current = currentGuess;
+      // MEMO -- guess has to be unique to display the list of past guesses.
+      currentLow.current = currentGuess + 1;
     }
     const nextGuess = generateRandomBetween(
       currentLow.current,
@@ -61,7 +68,8 @@ export const GameScreen = (props) => {
     );
     // MEMO -- re-rendering the component here, not when changing the value of currentLow and currentHigh
     setCurrentGuess(nextGuess);
-    setRounds((curRounds) => curRounds + 1);
+    //setRounds((curRounds) => curRounds + 1);
+    setPastGuesses((curPastGuesses) => [nextGuess, ...curPastGuesses]);
   };
 
   return (
@@ -77,6 +85,14 @@ export const GameScreen = (props) => {
           <Ionicons name="md-add" size={24} color="white" />
         </MainButton>
       </Card>
+      <View style={styles.listContainer}>
+        {/* MEMO -- layout property prepared for FlatList and ScrollView */}
+        <ScrollView contentContainerStyle={styles.list}>
+          {pastGuesses.map((guess, index) =>
+            renderListItems(guess, pastGuesses.length - index)
+          )}
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -88,6 +104,27 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 400,
     maxWidth: "90%",
+  },
+  list: {
+    // MEMO -- flexGrow is more flexible than flex, usually used for ScrollView
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  listContainer: {
+    // MEMO -- scrollview does not work on android without setting flex
+    flex: 1,
+    width: "80%",
+  },
+  listItem: {
+    flexDirection: "row",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: "white",
+    justifyContent: "space-between",
+    width: "60%",
   },
   screen: {
     flex: 1,
