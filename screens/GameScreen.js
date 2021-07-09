@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View, Button, Alert } from "react-native";
 
-import { NumberContainer, Card } from "../components";
+import { BodyText, Card, NumberContainer } from "../components";
 
 // MEMO -- If a function don't rely on props or state, that function can be defined outside of functional component
 const generateRandomBetween = (min, max, exclude) => {
@@ -65,7 +65,7 @@ export const GameScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <Text>Opponent's guess</Text>
+      <BodyText>Opponent's guess</BodyText>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
         {/* MEMO -- this also works: () => nextGuessHandler('lower') */}

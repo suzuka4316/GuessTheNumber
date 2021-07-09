@@ -10,7 +10,13 @@ import {
   Alert,
 } from "react-native";
 
-import { Card, Input, NumberContainer } from "../components";
+import {
+  BodyText,
+  Card,
+  Input,
+  NumberContainer,
+  TitleText,
+} from "../components";
 import { Colors } from "../constants/Colors";
 
 export const StartGameScreen = (props) => {
@@ -72,9 +78,9 @@ export const StartGameScreen = (props) => {
       }}
     >
       <View style={styles.screen}>
-        <Text style={styles.title}>Start a New Game!</Text>
+        <TitleText style={styles.title}>Start a New Game!</TitleText>
         <Card style={styles.inputContainer}>
-          <Text>Select a Number</Text>
+          <BodyText>Select a Number</BodyText>
           <Input
             style={styles.input}
             // MEMO -- This works only for Android
@@ -144,5 +150,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginVertical: 10,
+    // MEMO -- 2 fonts identifiers defined in App.js. Can be accessed anywhere in the app.
+    fontFamily: "open-sans-bold",
   },
 });
