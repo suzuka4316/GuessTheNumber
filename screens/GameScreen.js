@@ -10,7 +10,7 @@ const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min);
   // rounds down
   max = Math.floor(max);
-  // random number between 1 and 99 (１以上９９以下)
+  // random number between 1 and 99 (正確には１以上１００未満)
   const rndNum = Math.floor(Math.random() * (max - min)) + min;
   if (rndNum === exclude) {
     // MEMO -- RECURSION
@@ -56,9 +56,10 @@ export const GameScreen = (props) => {
       return;
     }
     if (direction === "lower") {
+      // MEMO -- if the number is 12 and guess is 85, 85 will be set as the highest number but also is excluded from possible guesses because of how the random number is created.
       currentHigh.current = currentGuess;
     } else {
-      // MEMO -- guess has to be unique to display the list of past guesses.
+      // MEMO -- guess has to be unique to map the list of past guesses with unique guess as a key. If the number is 76 and guess is 23, 24 will be set as the lowest number, so 23 will never appear as a future guess.
       currentLow.current = currentGuess + 1;
     }
     const nextGuess = generateRandomBetween(
@@ -66,7 +67,7 @@ export const GameScreen = (props) => {
       currentHigh.current,
       currentGuess
     );
-    // MEMO -- re-rendering the component here, not when changing the value of currentLow and currentHigh
+    // MEMO -- re-rendering the component here, not when changing the value of currentLow and currentHigh, hence the useRef
     setCurrentGuess(nextGuess);
     //setRounds((curRounds) => curRounds + 1);
     setPastGuesses((curPastGuesses) => [nextGuess, ...curPastGuesses]);
