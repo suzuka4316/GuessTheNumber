@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, Button, Alert } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-import { BodyText, Card, NumberContainer } from "../components";
+import { BodyText, Card, MainButton, NumberContainer } from "../components";
 
 // MEMO -- If a function don't rely on props or state, that function can be defined outside of functional component
 const generateRandomBetween = (min, max, exclude) => {
@@ -69,11 +70,12 @@ export const GameScreen = (props) => {
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
         {/* MEMO -- this also works: () => nextGuessHandler('lower') */}
-        <Button title="LOWER" onPress={nextGuessHandler.bind(this, "lower")} />
-        <Button
-          title="GREATER"
-          onPress={nextGuessHandler.bind(this, "greater")}
-        />
+        <MainButton onPress={nextGuessHandler.bind(this, "lower")}>
+          <Ionicons name="md-remove" size={24} color="white" />
+        </MainButton>
+        <MainButton onPress={nextGuessHandler.bind(this, "greater")}>
+          <Ionicons name="md-add" size={24} color="white" />
+        </MainButton>
       </Card>
     </View>
   );
@@ -84,8 +86,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 20,
-    width: 300,
-    maxWidth: "80%",
+    width: 400,
+    maxWidth: "90%",
   },
   screen: {
     flex: 1,

@@ -14,6 +14,7 @@ import {
   BodyText,
   Card,
   Input,
+  MainButton,
   NumberContainer,
   TitleText,
 } from "../components";
@@ -59,12 +60,13 @@ export const StartGameScreen = (props) => {
         <Text>You've selected:</Text>
         <NumberContainer>{selectedNumber}</NumberContainer>
         <View style={styles.button}>
-          <Button
-            title="START GAME"
+          <MainButton
             color={Colors.primary}
             //Triggers startGameHandler in App.js
             onPress={() => props.onStartGame(selectedNumber)}
-          />
+          >
+            START GAME
+          </MainButton>
         </View>
       </Card>
     );
@@ -119,7 +121,7 @@ export const StartGameScreen = (props) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: 100,
+    width: 110,
   },
   buttonContainer: {
     flexDirection: "row",
