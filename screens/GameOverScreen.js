@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,26 +14,66 @@ import { Colors } from "../constants/Colors";
 const window = Dimensions.get("window");
 
 export const GameOverScreen = (props) => {
+  const [availableDeviceWidth, setavailableDeviceWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [availableDeviceHeight, setavailableDeviceHeight] = useState(
+    Dimensions.get("window").height
+  );
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setavailableDeviceWidth(Dimensions.get("window").width);
+      setavailableDeviceHeight(Dimensions.get("window").height);
+    };
+    Dimensions.addEventListener("change", updateLayout);
+    // MEMO -- clean up function that runs before the useEffect function runs.
+    return () => {
+      Dimensions.removeEventListener("change", updateLayout);
+    };
+  });
+
   return (
     <ScrollView>
       <View style={styles.screen}>
         <TitleText>The Game is Over!</TitleText>
-        <View style={styles.imageContainer}>
+        <View
+          style={{
+            ...styles.imageContainer,
+            ...{
+              width: availableDeviceWidth * 0.7,
+              height: availableDeviceWidth * 0.7,
+              borderRadius: (availableDeviceWidth * 0.7) / 2,
+              //height / 20 sets the vertical margin to 5% of the device height
+              marginVertical: availableDeviceHeight / 30,
+            },
+          }}
+        >
           <Image
+            style={styles.image}
             fadeDuration={300}
             source={require("../assets/success.png")}
             // MEMO -- width and height has to be set for network image
             // source={{
             //   uri: "https://pixabay.com/photos/mountain-summit-summit-mountain-1375015/",
             // }}
-            style={styles.image}
             //cover is default
             resizeMode="cover"
           />
         </View>
-        <View style={styles.resultContainer}>
+        <View
+          style={{
+            ...styles.resultContainer,
+            ...{ marginVertical: availableDeviceHeight / 60 },
+          }}
+        >
           {/* MEMO -- Text component can be nested! Style is also inherited!!! Text has its own layout styling instead of flexbox */}
-          <BodyText style={styles.resultText}>
+          <BodyText
+            style={{
+              ...styles.resultText,
+              ...{ fontSize: window.height < 400 ? 16 : 20 },
+            }}
+          >
             Your phone needed{" "}
             <Text style={styles.highlight}>{props.roundsNumber}</Text> rounds to
             guess the number{" "}
@@ -55,28 +95,21 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   imageContainer: {
-    borderRadius: (window.width * 0.7) / 2,
     borderWidth: 3,
     borderColor: "black",
-    // when a child component has a relative width of less than 100%, its parent component can not use the width of its child.
-    width: window.width * 0.7,
-    height: window.width * 0.7,
     //crop anything overflows the container
     overflow: "hidden",
-    //height / 20 sets the vertical margin to 5% of the device height
-    marginVertical: window.height / 30,
   },
   resultContainer: {
     marginHorizontal: 30,
-    marginVertical: window.height / 60,
   },
   resultText: {
     textAlign: "center",
-    fontSize: window.height < 400 ? 16 : 20,
   },
   screen: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 10,
   },
 });

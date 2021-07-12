@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, Alert, ScrollView, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+// MEMO -- this only works for expo app!
+import { ScreenOrientation } from "expo";
 
 import { BodyText, Card, MainButton, NumberContainer } from "../components";
 
@@ -28,9 +30,29 @@ const renderListItems = (value, numOfRounds) => (
 );
 
 export const GameScreen = (props) => {
+  // ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+
   const initialGuess = generateRandomBetween(1, 100, props.userChoice);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
   const [pastGuesses, setPastGuesses] = useState([initialGuess]);
+  const [availableDeviceWidth, setavailableDeviceWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [availableDeviceHeight, setavailableDeviceHeight] = useState(
+    Dimensions.get("window").height
+  );
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setavailableDeviceWidth(Dimensions.get("window").width);
+      setavailableDeviceHeight(Dimensions.get("window").height);
+    };
+    Dimensions.addEventListener("change", updateLayout);
+    // MEMO -- clean up function that runs before the useEffect function runs.
+    return () => {
+      Dimensions.removeEventListener("change", updateLayout);
+    };
+  });
 
   // MEMO -- useRef allows you to define a value which survives component re-renders. The difference to the useState is that the component doesn't re-render even if the value is changed.
   const currentLow = useRef(1);
@@ -73,12 +95,16 @@ export const GameScreen = (props) => {
     setPastGuesses((curPastGuesses) => [nextGuess, ...curPastGuesses]);
   };
 
-  return (
-    <View style={styles.screen}>
-      <BodyText>Opponent's guess</BodyText>
+  let listContainerStyle = styles.listContainer;
+  if (availableDeviceWidth < 350) {
+    listContainerStyle = styles.listContainerBig;
+  }
+
+  let gameControls = (
+    // MEMO -- Fragments let you group a list of children without adding extra nodes to the DOM
+    <React.Fragment>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
-        {/* MEMO -- this also works: () => nextGuessHandler('lower') */}
         <MainButton onPress={nextGuessHandler.bind(this, "lower")}>
           <Ionicons name="md-remove" size={24} color="white" />
         </MainButton>
@@ -86,6 +112,27 @@ export const GameScreen = (props) => {
           <Ionicons name="md-add" size={24} color="white" />
         </MainButton>
       </Card>
+    </React.Fragment>
+  );
+
+  if (availableDeviceHeight < 500) {
+    gameControls = (
+      <View style={styles.controls}>
+        <MainButton onPress={nextGuessHandler.bind(this, "lower")}>
+          <Ionicons name="md-remove" size={24} color="white" />
+        </MainButton>
+        <NumberContainer>{currentGuess}</NumberContainer>
+        <MainButton onPress={nextGuessHandler.bind(this, "greater")}>
+          <Ionicons name="md-add" size={24} color="white" />
+        </MainButton>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      <BodyText>Opponent's guess</BodyText>
+      {gameControls}
       <View style={styles.listContainer}>
         {/* MEMO -- layout property prepared for FlatList and ScrollView */}
         <ScrollView contentContainerStyle={styles.list}>
@@ -102,10 +149,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    //responsive marginTop of button container
-    marginTop: Dimensions.get("window").height > 600 ? 20 : 5,
     width: 400,
     maxWidth: "90%",
+  },
+  controls: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "80%",
   },
   list: {
     // MEMO -- flexGrow is more flexible than flex, usually used for ScrollView
@@ -116,7 +167,10 @@ const styles = StyleSheet.create({
   listContainer: {
     // MEMO -- scrollview does not work on android without setting flex
     flex: 1,
-    width: Dimensions.get("window") > 350 ? "70%" : "80%",
+    width: "80%",
+  },
+  listContainerBig: {
+    width: "60%",
   },
   listItem: {
     flexDirection: "row",

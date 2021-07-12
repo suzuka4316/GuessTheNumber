@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   View,
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
+  ScrollView,
+  // MEMO -- Avoids keyboard to overlap the input a user is typing in
+  KeyboardAvoidingView,
   // MEMO -- APIs to talk with native device
   Keyboard,
   Alert,
@@ -26,6 +29,20 @@ export const StartGameScreen = (props) => {
   const [enteredValue, setEnteredValue] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState();
+  const [buttonWidth, setButtonWidth] = useState(
+    Dimensions.get("window").width / 4
+  );
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setButtonWidth(Dimensions.get("window").width / 4);
+    };
+    Dimensions.addEventListener("change", updateLayout);
+    // MEMO -- clean up function that runs before the useEffect function runs.
+    return () => {
+      Dimensions.removeEventListener('change', updateLayout);
+    };
+  });
 
   const numberInputHandler = (inputText) => {
     //Replace any input that is not a number to empty string
@@ -75,57 +92,63 @@ export const StartGameScreen = (props) => {
   }
 
   return (
-    // MEMO -- Registering a touch listener without giving any visual feedback for ios to close the keyboard
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-    >
-      <View style={styles.screen}>
-        <TitleText style={styles.title}>Start a New Game!</TitleText>
-        <Card style={styles.inputContainer}>
-          <BodyText>Select a Number</BodyText>
-          <Input
-            style={styles.input}
-            // MEMO -- This works only for Android
-            blurOnSubmit
-            autoCapitalize="none"
-            autoCorrect={false}
-            // MEMO -- This only works for ios. Decimal key is disabled.
-            keyboardType="number-pad"
-            maxLength={2}
-            onChangeText={numberInputHandler}
-            value={enteredValue}
-          />
-          <View style={styles.buttonContainer}>
-            <View style={styles.button}>
-              <Button
-                title="Reset"
-                onPress={resetInputHandler}
-                color={Colors.secondary}
+    <ScrollView>
+      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={30}>
+        {/* MEMO -- Registering a touch listener without giving any visual feedback
+      for ios to close the keyboard */}
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+          }}
+        >
+          <View style={styles.screen}>
+            <TitleText style={styles.title}>Start a New Game!</TitleText>
+            <Card style={styles.inputContainer}>
+              <BodyText>Select a Number</BodyText>
+              <Input
+                style={styles.input}
+                // MEMO -- This works only for Android
+                blurOnSubmit
+                autoCapitalize="none"
+                autoCorrect={false}
+                // MEMO -- This only works for ios. Decimal key is disabled.
+                keyboardType="number-pad"
+                maxLength={2}
+                onChangeText={numberInputHandler}
+                value={enteredValue}
               />
-            </View>
-            <View style={styles.button}>
-              <Button
-                title="Confirm"
-                onPress={confirmInputHandler}
-                color={Colors.primary}
-              />
-            </View>
+              <View style={styles.buttonContainer}>
+                <View style={{ width: buttonWidth }}>
+                  <Button
+                    title="Reset"
+                    onPress={resetInputHandler}
+                    color={Colors.secondary}
+                  />
+                </View>
+                <View style={{ width: buttonWidth }}>
+                  <Button
+                    title="Confirm"
+                    onPress={confirmInputHandler}
+                    color={Colors.primary}
+                  />
+                </View>
+              </View>
+            </Card>
+            {/* If 'undefined', nothing will be printed */}
+            {confirmedOutput}
           </View>
-        </Card>
-        {/* If 'undefined', nothing will be printed */}
-        {confirmedOutput}
-      </View>
-    </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    // width: 110,
-    width: Dimensions.get("window").width / 4,
-  },
+  // button: {
+  //   // width: 110,
+  //   // MEMO -- dimentions are only calculated when the app starts, so it wouldn't be responsive to the orientation change
+  //   width: Dimensions.get("window").width / 4,
+  // },
   buttonContainer: {
     flexDirection: "row",
     width: "100%",
