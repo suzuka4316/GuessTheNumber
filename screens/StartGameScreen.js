@@ -19,10 +19,11 @@ import {
   BodyText,
   Card,
   Input,
-  MainButton,
   NumberContainer,
   TitleText,
 } from "../components";
+// MEMO -- React automatically import either MainButton.android.js or MainButton.ios.js based on its Platform.
+import MainButton from "../components/MainButton";
 import { Colors } from "../constants/Colors";
 
 export const StartGameScreen = (props) => {
@@ -40,7 +41,7 @@ export const StartGameScreen = (props) => {
     Dimensions.addEventListener("change", updateLayout);
     // MEMO -- clean up function that runs before the useEffect function runs.
     return () => {
-      Dimensions.removeEventListener('change', updateLayout);
+      Dimensions.removeEventListener("change", updateLayout);
     };
   });
 

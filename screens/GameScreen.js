@@ -4,7 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 // MEMO -- this only works for expo app!
 import { ScreenOrientation } from "expo";
 
-import { BodyText, Card, MainButton, NumberContainer } from "../components";
+import { BodyText, Card, NumberContainer } from "../components";
+import MainButton from "../components/MainButton";
 
 // MEMO -- If a function don't rely on props or state, that function can be defined outside of functional component
 const generateRandomBetween = (min, max, exclude) => {

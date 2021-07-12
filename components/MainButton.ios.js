@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
 import { Colors } from "../constants/Colors";
 
-export const MainButton = (props) => {
+const MainButton = (props) => {
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={props.onPress}>
       <View style={styles.button}>
@@ -12,6 +12,8 @@ export const MainButton = (props) => {
     </TouchableOpacity>
   );
 };
+
+export default MainButton;
 
 const styles = StyleSheet.create({
   button: {

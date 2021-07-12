@@ -8,7 +8,8 @@ import {
   ScrollView,
 } from "react-native";
 
-import { BodyText, MainButton, TitleText } from "../components";
+import { BodyText, TitleText } from "../components";
+import MainButton from "../components/MainButton";
 import { Colors } from "../constants/Colors";
 
 const window = Dimensions.get("window");
@@ -41,9 +42,9 @@ export const GameOverScreen = (props) => {
           style={{
             ...styles.imageContainer,
             ...{
-              width: availableDeviceWidth * 0.7,
-              height: availableDeviceWidth * 0.7,
-              borderRadius: (availableDeviceWidth * 0.7) / 2,
+              width: availableDeviceWidth * 0.6,
+              height: availableDeviceWidth * 0.6,
+              borderRadius: (availableDeviceWidth * 0.6) / 2,
               //height / 20 sets the vertical margin to 5% of the device height
               marginVertical: availableDeviceHeight / 30,
             },
