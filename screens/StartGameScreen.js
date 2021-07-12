@@ -8,6 +8,8 @@ import {
   // MEMO -- APIs to talk with native device
   Keyboard,
   Alert,
+  // MEMO -- to determine the width and the height of the device
+  Dimensions,
 } from "react-native";
 
 import {
@@ -59,7 +61,7 @@ export const StartGameScreen = (props) => {
       <Card style={styles.confirmedMessageContainer}>
         <Text>You've selected:</Text>
         <NumberContainer>{selectedNumber}</NumberContainer>
-        <View style={styles.button}>
+        <View>
           <MainButton
             color={Colors.primary}
             //Triggers startGameHandler in App.js
@@ -121,7 +123,8 @@ export const StartGameScreen = (props) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: 110,
+    // width: 110,
+    width: Dimensions.get("window").width / 4,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -139,9 +142,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   inputContainer: {
-    width: 300,
-    // MEMO -- maxWidth in case of smaller screen devices
-    maxWidth: "80%",
+    width: "80%",
+    // MEMO -- default size is 80%, but minimum width is 300 px and maximum width is 95 %
+    minWidth: 300,
+    maxWidth: "95%",
     alignItems: "center",
   },
   screen: {

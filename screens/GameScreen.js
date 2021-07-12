@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Alert, ScrollView } from "react-native";
+import { StyleSheet, View, Alert, ScrollView, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { BodyText, Card, MainButton, NumberContainer } from "../components";
@@ -102,7 +102,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: 20,
+    //responsive marginTop of button container
+    marginTop: Dimensions.get("window").height > 600 ? 20 : 5,
     width: 400,
     maxWidth: "90%",
   },
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
   listContainer: {
     // MEMO -- scrollview does not work on android without setting flex
     flex: 1,
-    width: "80%",
+    width: Dimensions.get("window") > 350 ? "70%" : "80%",
   },
   listItem: {
     flexDirection: "row",
